@@ -1,477 +1,515 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>PromptVault</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>PromptVault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Font like Zigzag -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Zigzag-like font -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <style>
-    :root{
-        --blue-main:#3b82f6;
-        --blue-glow:#60a5fa;
-        --card-bg:#0b0b0b;
-        --border:#1f2933;
+  <style>
+    :root {
+      --blue-main: #3b82f6;
+      --blue-soft: #60a5fa;
+      --card-bg: #050505;
+      --border-subtle: #1f2933;
+      --text-muted: #9ca3af;
     }
 
-    *{
-        box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
-    body{
-        margin:0;
-        font-family:'Space Grotesk',system-ui,sans-serif;
-        background:#000;
-        color:white;
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      background: #000;
+      color: #fff;
     }
 
-    /* ================= HEADER ================= */
-
-    header{
-        text-align:center;
-        padding:40px 20px 20px;
+    /* =================== HEADER (GRID MODE) =================== */
+    header {
+      text-align: center;
+      padding: 32px 20px 16px;
     }
 
-    h1{
-        font-size:2.2rem;
-        letter-spacing:0.25em;
-        font-weight:700;
-        text-transform:uppercase;
-        margin:0 0 14px;
-        background:linear-gradient(90deg,#3b82f6,#60a5fa);
-        -webkit-background-clip:text;
-        -webkit-text-fill-color:transparent;
+    h1 {
+      margin: 0 0 14px;
+      font-size: 2.2rem;
+      letter-spacing: 0.25em;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .counter{
-        color:#94a3b8;
-        font-size:14px;
-        margin-top:6px;
+    .counter {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 6px;
     }
 
-    /* ================= FILTER NAV ================= */
-
-    .nav-container{
-        display:flex;
-        gap:10px;
-        justify-content:center;
-        margin:20px 0 6px;
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 16px 0 4px;
     }
 
-    .nav-btn{
-        background:#000;
-        border:1px solid var(--blue-main);
-        color:var(--blue-main);
-        padding:9px 18px;
-        border-radius:999px;
-        font-size:14px;
-        cursor:pointer;
-        transition:0.2s;
+    .nav-btn {
+      background: #000;
+      border: 1px solid var(--blue-main);
+      color: var(--blue-main);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.18s;
     }
 
-    .nav-btn:hover{
-        box-shadow:0 0 10px rgba(59,130,246,0.5);
+    .nav-btn:hover {
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
     }
 
-    .nav-btn.active{
-        background:var(--blue-main);
-        color:black;
-        box-shadow:0 0 15px var(--blue-glow);
+    .nav-btn.active {
+      background: var(--blue-main);
+      color: #000;
+      box-shadow: 0 0 18px rgba(59, 130, 246, 0.7);
     }
 
-    /* ================= MAIN GRID ================= */
+    /* =================== GRID MODE =================== */
 
-    .container{
-        max-width:1200px;
-        margin:auto;
-        padding:40px 20px 60px;
-        display:grid;
-        grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-        gap:24px;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 24px;
     }
 
-    /* ================= PROMPT CARD ================= */
-
-    .card{
-        background:var(--card-bg);
-        border-radius:22px;
-        padding:14px;
-        border:1px solid var(--border);
-        transition:0.25s;
+    .card {
+      background: #0b0b0b;
+      border-radius: 22px;
+      padding: 14px;
+      border: 1px solid var(--border-subtle);
+      transition: 0.25s;
     }
 
-    .card:hover{
-        transform:translateY(-6px);
-        box-shadow:0 0 25px rgba(59,130,246,0.35);
-        border-color:var(--blue-main);
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.35);
+      border-color: var(--blue-main);
     }
 
-    .img-box img{
-        width:100%;
-        border-radius:14px;
-        display:block;
+    .img-box img {
+      width: 100%;
+      border-radius: 14px;
+      display: block;
     }
 
-    .prompt-text{
-        font-size:14px;
-        color:#cbd5f5;
-        margin:12px 0;
-        line-height:1.6;
-        max-height:70px;
-        overflow:hidden;
+    .prompt-text {
+      font-size: 14px;
+      color: #cbd5f5;
+      margin: 12px 0;
+      line-height: 1.6;
+      max-height: 70px;
+      overflow: hidden;
     }
 
-    /* ================= CARD BUTTONS ================= */
-
-    .card-actions{
-        display:flex;
-        gap:10px;
+    .card-actions {
+      display: flex;
+      gap: 10px;
     }
 
-    .btn-action{
-        flex:1;
-        background:#000;
-        border:1px solid var(--blue-main);
-        color:white;
-        padding:9px;
-        border-radius:999px;
-        cursor:pointer;
-        font-size:13px;
-        transition:0.2s;
-        display:inline-flex;
-        justify-content:center;
-        align-items:center;
-        gap:6px;
+    .btn-action {
+      flex: 1;
+      background: #000;
+      border: 1px solid var(--blue-main);
+      color: #fff;
+      padding: 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: 0.18s;
     }
 
-    .btn-action:hover{
-        background:var(--blue-main);
-        color:black;
+    .btn-action:hover {
+      background: var(--blue-main);
+      color: #000;
     }
 
-    /* ================= SHARE MODE ================= */
+    /* =================== SHARE PAGE LAYOUT =================== */
 
-    .container.share-mode{
-        grid-template-columns:1fr;
-        max-width:980px;
+    .container.share-mode {
+      display: block;
+      max-width: 720px;
+      padding: 24px 16px 40px;
     }
 
-    .share-layout{
-        max-width:900px;
-        margin:auto;
+    .share-page {
+      max-width: 520px;
+      margin: 0 auto;
     }
 
-    .share-header-row{
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:16px;
-        gap:10px;
+    .share-top-logo-bar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .share-logo{
-        font-size:13px;
-        letter-spacing:0.18em;
-        text-transform:uppercase;
-        color:#e5e7eb;
-        opacity:0.8;
+    .share-logo-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      background: #000;
+      opacity: 0.9;
     }
 
-    .share-back-link{
-        font-size:12px;
-        color:#cbd5f5;
-        text-decoration:none;
-        border-radius:999px;
-        border:1px solid var(--border);
-        padding:6px 12px;
+    .share-card {
+      background: var(--card-bg);
+      border-radius: 26px;
+      border: 1px solid #111827;
+      overflow: hidden;
+      box-shadow: 0 32px 60px rgba(0, 0, 0, 0.85);
     }
 
-    .share-back-link:hover{
-        border-color:var(--blue-main);
-        color:white;
+    .share-main-image {
+      position: relative;
+      background: #000;
     }
 
-    .share-card{
-        background:#050505;
-        padding:22px;
-        border-radius:28px;
-        display:grid;
-        grid-template-columns:1.3fr 1fr;
-        gap:20px;
-        border:1px solid var(--blue-main);
-        box-shadow:0 0 40px rgba(59,130,246,0.35);
+    .share-main-image img {
+      width: 100%;
+      display: block;
+      max-height: 520px;
+      object-fit: cover;
     }
 
-    @media(max-width:900px){
-        .share-card{grid-template-columns:1fr}
-        .share-header-row{flex-direction:column;align-items:flex-start;}
+    /* Placeholder for reference thumbnails (bottom-right). 
+       We don't have refs yet, so it's just hidden by default. */
+    .share-refs {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      display: none; /* change to flex if you add reference images later */
+      gap: 6px;
     }
 
-    .share-image-wrap img{
-        width:100%;
-        border-radius:20px;
-        display:block;
+    .share-ref-thumb {
+      width: 48px;
+      height: 64px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #000;
     }
 
-    .share-content{
-        display:flex;
-        flex-direction:column;
-        gap:12px;
+    .share-ref-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .share-pill{
-        font-size:12px;
-        padding:4px 12px;
-        border:1px solid var(--blue-main);
-        border-radius:999px;
-        display:inline-block;
-        color:var(--blue-main);
-        text-transform:uppercase;
-        letter-spacing:0.12em;
+    .share-body {
+      padding: 18px 18px 16px;
     }
 
-    .share-title{
-        font-size:22px;
-        font-weight:700;
-        letter-spacing:0.2em;
-        text-transform:uppercase;
-        color:var(--blue-main);
+    .share-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 4px 0 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
-    .share-meta{
-        font-size:12px;
-        color:#9ca3af;
+    .share-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .share-prompt-box{
-        background:black;
-        padding:14px;
-        border-radius:14px;
-        font-size:14px;
-        line-height:1.7;
-        border:1px solid var(--blue-main);
-        max-height:240px;
-        overflow-y:auto;
-        color:#e5e7eb;
+    .share-chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #111827;
+      background: #020617;
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .share-actions{
-        display:flex;
-        gap:10px;
-        margin-top:14px;
-        flex-wrap:wrap;
+    .share-chip i {
+      font-size: 12px;
+      color: var(--text-muted);
     }
 
-    .share-btn-primary{
-        flex:1;
-        background:var(--blue-main);
-        color:black;
-        border:none;
-        border-radius:999px;
-        padding:11px;
-        font-weight:700;
-        cursor:pointer;
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        gap:8px;
-        font-size:13px;
+    .share-prompt-box {
+      position: relative;
+      background: #020617;
+      border-radius: 16px;
+      padding: 12px 12px;
+      border: 1px solid #111827;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #e5e7eb;
+      max-height: 220px;
+      overflow-y: auto;
     }
 
-    .share-btn-secondary{
-        flex:1;
-        background:black;
-        color:white;
-        border:1px solid var(--blue-main);
-        border-radius:999px;
-        padding:11px;
-        cursor:pointer;
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        gap:8px;
-        font-size:13px;
+    .share-prompt-box::-webkit-scrollbar {
+      width: 6px;
     }
 
-    .share-btn-primary:hover{
-        box-shadow:0 0 18px rgba(59,130,246,0.7);
+    .share-prompt-box::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 999px;
     }
 
-    .share-btn-secondary:hover{
-        background:#020617;
+    .share-actions-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
     }
 
-    /* ================= TOAST ================= */
-
-    .toast{
-        position:fixed;
-        bottom:20px;
-        left:50%;
-        transform:translateX(-50%);
-        background:var(--blue-main);
-        color:black;
-        padding:10px 22px;
-        border-radius:999px;
-        font-weight:600;
-        display:none;
-        box-shadow:0 0 25px rgba(59,130,246,0.6);
-        font-size:13px;
+    .share-btn-primary,
+    .share-btn-secondary {
+      border-radius: 999px;
+      padding: 11px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
-    .toast.show{display:block}
-    </style>
+    .share-btn-primary {
+      background: var(--blue-main);
+      color: #000;
+      box-shadow: 0 0 18px rgba(59, 130, 246, 0.6);
+    }
+
+    .share-btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .share-btn-secondary {
+      background: #fff;
+      color: #000;
+    }
+
+    .share-btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    /* =================== TOAST =================== */
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #000;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+      display: none;
+      box-shadow: 0 18px 35px rgba(0, 0, 0, 0.8);
+    }
+
+    .toast.show {
+      display: block;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>PromptVault</h1>
 
-    <header>
-        <h1>PromptVault</h1>
+    <nav class="nav-container">
+      <button class="nav-btn active" onclick="filterCategory('midjourney')">Midjourney</button>
+      <button class="nav-btn" onclick="filterCategory('nanobanana')">Nanobanana</button>
+    </nav>
 
-        <nav class="nav-container">
-            <button class="nav-btn active" onclick="filterCategory('midjourney')">Midjourney</button>
-            <button class="nav-btn" onclick="filterCategory('nanobanana')">Nanobanana</button>
-        </nav>
+    <div class="counter" id="count-display">Loading...</div>
+  </header>
 
-        <div class="counter" id="count-display">Loading...</div>
-    </header>
+  <main class="container" id="grid-area"></main>
 
-    <main class="container" id="grid-area"></main>
+  <div class="toast" id="toast">Copied!</div>
 
-    <div class="toast" id="toast">Copied!</div>
+  <!-- Your prompts data -->
+  <script src="prompts.js"></script>
 
-    <!-- Your data file (keep as prompts.js like you sent) -->
-    <script src="index.js"></script>
-
-    <script>
-    const grid = document.getElementById('grid-area');
-    const countDisplay = document.getElementById('count-display');
-    const navContainer = document.querySelector('.nav-container');
-    const navBtns = document.querySelectorAll('.nav-btn');
-    const toast = document.getElementById('toast');
+  <script>
+    const grid = document.getElementById("grid-area");
+    const countDisplay = document.getElementById("count-display");
+    const navContainer = document.querySelector(".nav-container");
+    const navBtns = document.querySelectorAll(".nav-btn");
+    const toast = document.getElementById("toast");
 
     const urlParams = new URLSearchParams(window.location.search);
-    const sharedId = urlParams.get('id');
+    const sharedId = urlParams.get("id");
 
-    if (typeof allPrompts === 'undefined') {
-        countDisplay.innerText = "Error: prompts.js not loaded";
+    if (typeof allPrompts === "undefined") {
+      countDisplay.innerText = "Error: prompts.js not loaded";
     } else {
-        if (sharedId) {
-            renderSharedCard(sharedId);
-        } else {
-            renderPrompts('midjourney');
-        }
+      if (sharedId) {
+        renderSharedCard(sharedId);
+      } else {
+        renderPrompts("midjourney");
+      }
     }
 
-    function renderSharedCard(id){
-        const data = allPrompts.find(p => p.id == id);
+    // =================== SHARE PAGE ===================
+    function renderSharedCard(id) {
+      const data = allPrompts.find((p) => p.id == id);
 
-        if(!data){
-            navContainer.style.display = "none";
-            grid.innerHTML = `<p>Prompt not found.</p>`;
-            countDisplay.innerText = "0 Prompts";
-            return;
-        }
-
+      if (!data) {
         navContainer.style.display = "none";
-        grid.classList.add('share-mode');
+        grid.classList.add("share-mode");
+        grid.innerHTML = "<p>Prompt not found.</p>";
+        countDisplay.innerText = "0 Prompts";
+        return;
+      }
 
-        const safePrompt = JSON.stringify(data.prompt);
+      navContainer.style.display = "none";
+      grid.classList.add("share-mode");
 
-        grid.innerHTML = `
-        <section class="share-layout">
-            <div class="share-header-row">
-                <div class="share-logo">PROMPTVAULT • STYLE</div>
-                <a href="${window.location.pathname}" class="share-back-link">
-                    ← View all prompts
-                </a>
+      const safePrompt = JSON.stringify(data.prompt);
+      const title = data.title || `Prompt Style #${data.id}`;
+      const categoryLabel =
+        data.category === "midjourney" ? "Midjourney" : "NanoBanana";
+
+      grid.innerHTML = `
+        <section class="share-page">
+          <div class="share-top-logo-bar">
+            <div class="share-logo-pill">PROMPTVAULT</div>
+          </div>
+
+          <article class="share-card">
+            <div class="share-main-image">
+              <img src="${data.image}" alt="Prompt preview">
+              <div class="share-refs"><!-- thumbnails if you add later --></div>
             </div>
 
-            <article class="share-card">
-                <div class="share-image-wrap">
-                    <img src="${data.image}" alt="Prompt preview">
+            <div class="share-body">
+              <h1 class="share-title">${title}</h1>
+
+              <div class="share-chip-row">
+                <div class="share-chip">
+                  <i class="fa-regular fa-gem"></i>${categoryLabel}
                 </div>
-
-                <div class="share-content">
-                    <span class="share-pill">${data.category}</span>
-
-                    <h2 class="share-title">Style Prompt</h2>
-
-                    <div class="share-meta">Prompt #${data.id}</div>
-
-                    <div class="share-prompt-box">${data.prompt}</div>
-
-                    <div class="share-actions">
-                        <button class="share-btn-primary" onclick='copyText(${safePrompt})'>
-                            <i class="fa-regular fa-copy"></i>
-                            Copy Prompt
-                        </button>
-
-                        <button class="share-btn-secondary" onclick="copyText(window.location.href)">
-                            <i class="fa-solid fa-share-nodes"></i>
-                            Copy Share Link
-                        </button>
-                    </div>
+                <div class="share-chip">
+                  <i class="fa-regular fa-message"></i>Prompt #${data.id}
                 </div>
-            </article>
-        </section>`;
-        countDisplay.innerText = "Shared Prompt";
-    }
-
-    function renderPrompts(category){
-        grid.classList.remove('share-mode');
-        navContainer.style.display = "flex";
-
-        navBtns.forEach(btn=>{
-            btn.classList.toggle("active", btn.innerText.toLowerCase() === category);
-        });
-
-        const filtered = allPrompts.filter(p => p.category === category);
-        countDisplay.innerText = filtered.length + " Prompts";
-
-        grid.innerHTML = filtered.map(item => {
-            const safePrompt = JSON.stringify(item.prompt);
-            return `
-            <div class="card">
-                <div class="img-box"><img src="${item.image}" alt="Prompt image"></div>
-                <div class="prompt-text">${item.prompt}</div>
-                <div class="card-actions">
-                    <button class="btn-action" onclick='copyText(${safePrompt})'>
-                        <i class="fa-regular fa-copy"></i>
-                        Copy
-                    </button>
-                    <button class="btn-action" onclick="shareCard(${item.id})">
-                        <i class="fa-solid fa-share-nodes"></i>
-                        Share
-                    </button>
+                <div class="share-chip">
+                  <i class="fa-regular fa-eye"></i>Shared style
                 </div>
-            </div>`;
-        }).join("");
+              </div>
+
+              <div class="share-prompt-box">
+                ${data.prompt}
+              </div>
+
+              <div class="share-actions-row">
+                <button class="share-btn-primary" onclick='copyText(${safePrompt})'>
+                  <i class="fa-regular fa-copy"></i>
+                  Copy prompt
+                </button>
+                <button class="share-btn-secondary" onclick="copyText(window.location.href)">
+                  <i class="fa-solid fa-share-nodes"></i>
+                  Share style
+                </button>
+              </div>
+            </div>
+          </article>
+        </section>
+      `;
+
+      countDisplay.innerText = "Shared Prompt";
     }
 
-    function filterCategory(cat){
-        if (typeof allPrompts === 'undefined') return;
-        // Remove ?id= from URL if present
-        if (window.location.search.includes('id=')) {
-            window.history.pushState({}, document.title, window.location.pathname);
-        }
-        renderPrompts(cat);
+    // =================== GRID MODE ===================
+    function renderPrompts(category) {
+      grid.classList.remove("share-mode");
+      navContainer.style.display = "flex";
+
+      navBtns.forEach((btn) => {
+        btn.classList.toggle("active", btn.innerText.toLowerCase() === category);
+      });
+
+      const filtered = allPrompts.filter((p) => p.category === category);
+      countDisplay.innerText = filtered.length + " Prompts";
+
+      grid.innerHTML = filtered
+        .map((item) => {
+          const safePrompt = JSON.stringify(item.prompt);
+          return `
+          <div class="card">
+            <div class="img-box">
+              <img src="${item.image}" alt="Prompt image">
+            </div>
+            <div class="prompt-text">${item.prompt}</div>
+            <div class="card-actions">
+              <button class="btn-action" onclick='copyText(${safePrompt})'>
+                <i class="fa-regular fa-copy"></i>
+                Copy
+              </button>
+              <button class="btn-action" onclick="shareCard(${item.id})">
+                <i class="fa-solid fa-share-nodes"></i>
+                Share
+              </button>
+            </div>
+          </div>`;
+        })
+        .join("");
     }
 
-    function shareCard(id){
-        const link = window.location.origin + window.location.pathname + "?id=" + id;
-        copyText(link);
+    function filterCategory(cat) {
+      if (typeof allPrompts === "undefined") return;
+
+      // Remove ?id= if present
+      if (window.location.search.includes("id=")) {
+        window.history.pushState({}, document.title, window.location.pathname);
+      }
+      renderPrompts(cat);
     }
 
-    function copyText(text){
-        navigator.clipboard.writeText(text).then(()=>{
-            toast.textContent = "Copied!";
-            toast.classList.add("show");
-            setTimeout(()=>toast.classList.remove("show"),2000);
-        });
+    function shareCard(id) {
+      const link =
+        window.location.origin + window.location.pathname + "?id=" + id;
+      copyText(link);
     }
-    </script>
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        toast.textContent = "Copied!";
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2000);
+      });
+    }
+  </script>
 </body>
 </html>
