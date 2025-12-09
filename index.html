@@ -199,13 +199,11 @@
       object-fit: cover;
     }
 
-    /* Placeholder for reference thumbnails (bottom-right). 
-       We don't have refs yet, so it's just hidden by default. */
     .share-refs {
       position: absolute;
       right: 14px;
       bottom: 14px;
-      display: none; /* change to flex if you add reference images later */
+      display: none;
       gap: 6px;
     }
 
@@ -397,10 +395,10 @@
       navContainer.style.display = "none";
       grid.classList.add("share-mode");
 
-      const safePrompt = JSON.stringify(data.prompt);
       const title = data.title || `Prompt Style #${data.id}`;
       const categoryLabel =
         data.category === "midjourney" ? "Midjourney" : "NanoBanana";
+      const encodedPrompt = encodeURIComponent(data.prompt);
 
       grid.innerHTML = `
         <section class="share-page">
@@ -434,7 +432,11 @@
               </div>
 
               <div class="share-actions-row">
-                <button class="share-btn-primary" onclick='copyText(${safePrompt})'>
+                <button
+                  class="share-btn-primary"
+                  data-prompt="${encodedPrompt}"
+                  onclick="copyPromptFromButton(this)"
+                >
                   <i class="fa-regular fa-copy"></i>
                   Copy prompt
                 </button>
@@ -465,7 +467,7 @@
 
       grid.innerHTML = filtered
         .map((item) => {
-          const safePrompt = JSON.stringify(item.prompt);
+          const encodedPrompt = encodeURIComponent(item.prompt);
           return `
           <div class="card">
             <div class="img-box">
@@ -473,7 +475,11 @@
             </div>
             <div class="prompt-text">${item.prompt}</div>
             <div class="card-actions">
-              <button class="btn-action" onclick='copyText(${safePrompt})'>
+              <button
+                class="btn-action"
+                data-prompt="${encodedPrompt}"
+                onclick="copyPromptFromButton(this)"
+              >
                 <i class="fa-regular fa-copy"></i>
                 Copy
               </button>
@@ -503,12 +509,42 @@
       copyText(link);
     }
 
+    // =================== COPY HELPERS ===================
+    function copyPromptFromButton(btn) {
+      const encoded = btn.getAttribute("data-prompt") || "";
+      const text = decodeURIComponent(encoded);
+      copyText(text);
+    }
+
     function copyText(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        toast.textContent = "Copied!";
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 2000);
-      });
+      if (!navigator.clipboard) {
+        // Fallback for older browsers
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand("copy");
+          showToast("Copied!");
+        } catch (e) {
+          showToast("Copy failed");
+        }
+        document.body.removeChild(textarea);
+        return;
+      }
+
+      navigator.clipboard.writeText(text).then(
+        () => showToast("Copied!"),
+        () => showToast("Copy failed")
+      );
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
     }
   </script>
 </body>
