@@ -1,800 +1,238 @@
 <!DOCTYPE html> 
 <html lang="en">
 <head>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PromptVault</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg-main: #050816;
-            --bg-card: rgba(8, 11, 24, 0.92);
-            --bg-card-hover: rgba(14, 18, 40, 0.98);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-strong: rgba(255, 255, 255, 0.18);
-            --accent: #ff6ae3;
-            --accent-soft: rgba(255, 106, 227, 0.35);
-            --accent-blue: #5fd4ff;
-            --text-muted: #9ca3af;
-            --text-soft: #6b7280;
-            --radius-xl: 24px;
-            --radius-lg: 18px;
-            --transition-fast: 0.22s ease-out;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            color: #f9fafb;
-            background:
-                radial-gradient(circle at 10% 0%, rgba(255, 106, 227, 0.18) 0, transparent 60%),
-                radial-gradient(circle at 90% 100%, rgba(95, 212, 255, 0.22) 0, transparent 55%),
-                radial-gradient(circle at 0% 100%, rgba(248, 250, 252, 0.05) 0, transparent 55%),
-                var(--bg-main);
-            overflow-x: hidden;
-        }
-
-        /* Subtle grain overlay like zigzag-style */
-        .bg-noise {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            opacity: 0.25;
-            mix-blend-mode: soft-light;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
-            z-index: -1;
-        }
-
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 20px 96px 20px;
-        }
-
-        /* HEADER / HERO (zigzag style) */
-        header {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 20px 8px 20px;
-        }
-
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .logo-wrap {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-mark {
-            width: 32px;
-            height: 32px;
-            border-radius: 999px;
-            background: conic-gradient(from 210deg, #ff6ae3, #5fd4ff, #ffb86c, #ff6ae3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 30px rgba(255, 106, 227, 0.7);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .logo-mark::after {
-            content: "";
-            position: absolute;
-            inset: 1px;
-            border-radius: inherit;
-            background: radial-gradient(circle at 30% 0%, rgba(255,255,255,0.3) 0, transparent 50%),
-                        rgba(4,7,20,0.9);
-        }
-
-        .logo-letter {
-            position: relative;
-            font-size: 1rem;
-            font-weight: 700;
-            font-family: 'Space Grotesk', system-ui, sans-serif;
-            letter-spacing: 0.03em;
-        }
-
-        .logo-text {
-            font-family: 'Space Grotesk', system-ui, sans-serif;
-            font-weight: 600;
-            font-size: 1.2rem;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-
-        .tag-pill {
-            display: inline-flex;
-            padding: 6px 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.4);
-            background: rgba(15, 23, 42, 0.8);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.18em;
-            color: #e5e7eb;
-            gap: 8px;
-            align-items: center;
-            white-space: nowrap;
-        }
-
-        .tag-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: radial-gradient(circle at 30% 30%, #f9fafb 0, #22c55e 40%, #16a34a 80%);
-        }
-
-        .hero {
-            display: grid;
-            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-            gap: 32px;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 900px) {
-            .hero {
-                grid-template-columns: minmax(0, 1fr);
-                text-align: left;
-            }
-
-            .top-bar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        .hero-heading {
-            font-family: 'Space Grotesk', system-ui, sans-serif;
-            font-weight: 700;
-            font-size: clamp(2.1rem, 4vw, 3.2rem);
-            line-height: 1.02;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .hero-heading span {
-            display: block;
-        }
-
-        .hero-heading-gradient {
-            background: linear-gradient(120deg, #ffffff 10%, #d1fae5 40%, #c4b5fd 65%, #f9a8d4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-subtitle {
-            margin-top: 14px;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            max-width: 420px;
-        }
-
-        .hero-metrics {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 20px;
-        }
-
-        .metric-pill {
-            padding: 8px 14px;
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.5);
-            font-size: 0.78rem;
-            color: #e5e7eb;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.9);
-        }
-
-        .metric-pill i {
-            font-size: 0.85rem;
-        }
-
-        .hero-right {
-            justify-self: end;
-        }
-
-        @media (max-width: 900px) {
-            .hero-right {
-                justify-self: flex-start;
-            }
-        }
-
-        /* Navigation filters (Midjourney / Nanobanana) */
-        .nav-container {
-            display: inline-flex;
-            padding: 4px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(148, 163, 184, 0.5);
-            gap: 4px;
-        }
-
-        .nav-hidden {
-            display: none !important;
-        }
-
-        .nav-btn {
-            position: relative;
-            background: transparent;
-            border: none;
-            color: #9ca3af;
-            padding: 8px 18px;
-            border-radius: 999px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            font-family: 'Outfit', sans-serif;
-            transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-            white-space: nowrap;
-        }
-
-        .nav-btn:hover {
-            color: #e5e7eb;
-            transform: translateY(-1px);
-        }
-
-        .nav-btn.active {
-            color: #020617;
-            background: linear-gradient(120deg, #ff6ae3, #5fd4ff);
-            box-shadow: 0 0 0 1px rgba(15,23,42,0.8), 0 12px 30px rgba(0,0,0,0.6);
-        }
-
-        .counter {
-            margin-top: 12px;
-            color: var(--text-soft);
-            font-size: 0.85rem;
-        }
-
-        /* GRID & CARDS */
-        .container {
-            margin-top: 32px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border-subtle);
-            backdrop-filter: blur(18px);
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
-        }
-
-        .card::before {
-            content: "";
-            position: absolute;
-            inset: -80%;
-            background:
-                radial-gradient(circle at 0% 0%, rgba(255,106,227,0.16) 0, transparent 55%),
-                radial-gradient(circle at 100% 100%, rgba(95,212,255,0.18) 0, transparent 50%);
-            opacity: 0;
-            transition: opacity var(--transition-fast);
-            pointer-events: none;
-        }
-
-        .card:hover {
-            transform: translateY(-6px) translateZ(0);
-            border-color: var(--border-strong);
-            background: var(--bg-card-hover);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-click-area {
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .img-box {
-            width: 100%;
-            aspect-ratio: 4 / 5;
-            border-radius: 18px;
-            overflow: hidden;
-            margin-bottom: 14px;
-            background: #020617;
-            position: relative;
-        }
-
-        .img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease, filter 0.35s ease;
-        }
-
-        .card:hover .img-box img {
-            transform: scale(1.06);
-            filter: saturate(1.15);
-        }
-
-        .prompt-text {
-            font-size: 0.85rem;
-            color: #d1d5db;
-            line-height: 1.6;
-            margin-bottom: 14px;
-            height: 60px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            mask-image: linear-gradient(180deg, #fff 60%, transparent);
-            transition: color 0.18s ease-out;
-        }
-
-        .card-click-area:hover .prompt-text {
-            color: #f9fafb;
-        }
-
-        .card-actions {
-            margin-top: auto;
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-action {
-            background: rgba(15, 23, 42, 0.95);
-            border-radius: 999px;
-            border: 1px solid rgba(148, 163, 184, 0.7);
-            color: #e5e7eb;
-            padding: 9px 12px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            font-family: 'Outfit', sans-serif;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast);
-        }
-
-        .btn-action i {
-            font-size: 0.9rem;
-        }
-
-        .btn-action:hover {
-            background: rgba(15, 23, 42, 1);
-            border-color: rgba(248, 250, 252, 0.9);
-            color: #f9fafb;
-            transform: translateY(-1px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-        }
-
-        .btn-copy {
-            flex-grow: 1;
-            justify-content: center;
-        }
-
-        .btn-share {
-            width: 44px;
-            flex-shrink: 0;
-        }
-
-        /* MODAL */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(3, 7, 18, 0.88);
-            backdrop-filter: blur(18px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.25s ease-out;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: rgba(15, 23, 42, 0.97);
-            border-radius: 26px;
-            border: 1px solid rgba(148, 163, 184, 0.7);
-            width: 100%;
-            max-width: 520px;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 20px 18px 20px;
-            position: relative;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
-            transform: scale(0.9);
-            transition: transform 0.25s ease-out;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 10px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.9);
-        }
-
-        .modal-title {
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #e5e7eb;
-        }
-
-        .close-btn {
-            border: none;
-            background: transparent;
-            color: #9ca3af;
-            font-size: 1.4rem;
-            cursor: pointer;
-            padding: 2px 4px;
-            border-radius: 999px;
-            transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-        }
-
-        .close-btn:hover {
-            background: rgba(30, 64, 175, 0.6);
-            color: #f9fafb;
-            transform: rotate(5deg);
-        }
-
-        .modal-scroll-area {
-            overflow-y: auto;
-            padding-right: 4px;
-            margin-bottom: 14px;
-        }
-
-        .modal-scroll-area::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .modal-scroll-area::-webkit-scrollbar-thumb {
-            background: #374151;
-            border-radius: 999px;
-        }
-
-        .modal-img {
-            width: 100%;
-            border-radius: 18px;
-            margin-bottom: 14px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .modal-text {
-            font-size: 0.95rem;
-            color: #e5e7eb;
-            line-height: 1.7;
-            white-space: pre-wrap;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(120%);
-            background: #f9fafb;
-            color: #020617;
-            padding: 10px 22px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
-            opacity: 0;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1100;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast i {
-            font-size: 1rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PromptVault</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+body{
+    margin:0;
+    font-family:'Outfit',sans-serif;
+    background:#050816;
+    color:white;
+}
+
+/* ================= NORMAL GRID ================= */
+
+header{text-align:center;padding:30px;}
+.nav-container{display:flex;gap:10px;justify-content:center;margin-bottom:10px;}
+.nav-btn{background:#111;border:1px solid #333;color:white;padding:8px 15px;border-radius:20px;cursor:pointer}
+.nav-btn.active{background:#22c55e;color:black}
+.counter{color:#aaa;font-size:14px}
+
+.container{max-width:1200px;margin:auto;padding:30px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+
+.card{background:#0f172a;border-radius:18px;padding:12px;border:1px solid #333}
+.img-box img{width:100%;border-radius:12px}
+.prompt-text{font-size:14px;color:#ccc;margin:10px 0}
+.card-actions{display:flex;gap:10px}
+.btn-action{flex:1;background:#111;border:1px solid #333;color:white;padding:8px;border-radius:20px;cursor:pointer}
+
+/* ================= SHARE PAGE STYLE ================= */
+
+.container.share-mode{
+    grid-template-columns:1fr;
+    max-width:1000px;
+}
+
+.share-layout{max-width:900px;margin:auto}
+
+.share-card{
+    background:#0f172a;
+    padding:20px;
+    border-radius:24px;
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:20px;
+    border:1px solid #333;
+}
+
+@media(max-width:900px){
+    .share-card{grid-template-columns:1fr}
+}
+
+.share-image-wrap img{
+    width:100%;
+    border-radius:18px;
+}
+
+.share-content{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.share-pill{
+    font-size:12px;
+    padding:4px 10px;
+    border:1px solid #444;
+    border-radius:999px;
+    display:inline-block;
+}
+
+.share-title{
+    font-size:22px;
+    font-weight:600;
+}
+
+.share-prompt-box{
+    background:#020617;
+    padding:12px;
+    border-radius:12px;
+    font-size:14px;
+    line-height:1.6;
+    max-height:240px;
+    overflow-y:auto;
+}
+
+.share-actions{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.share-btn-primary{
+    flex:1;
+    background:#22c55e;
+    color:black;
+    border:none;
+    border-radius:20px;
+    padding:10px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.share-btn-secondary{
+    flex:1;
+    background:#111;
+    color:white;
+    border:1px solid #333;
+    border-radius:20px;
+    padding:10px;
+    cursor:pointer;
+}
+
+.toast{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:white;
+    color:black;
+    padding:10px 20px;
+    border-radius:20px;
+    display:none;
+}
+.toast.show{display:block}
+</style>
 </head>
+
 <body>
-    <div class="bg-noise"></div>
 
-    <header>
-        <div class="top-bar">
-            <div class="logo-wrap">
-                <div class="logo-mark">
-                    <span class="logo-letter">PV</span>
-                </div>
-                <div class="logo-text">PromptVault</div>
+<header>
+    <h1>PromptVault</h1>
+
+    <nav class="nav-container">
+        <button class="nav-btn active" onclick="filterCategory('midjourney')">Midjourney</button>
+        <button class="nav-btn" onclick="filterCategory('nanobanana')">Nanobanana</button>
+    </nav>
+
+    <div class="counter" id="count-display"></div>
+</header>
+
+<main class="container" id="grid-area"></main>
+
+<div class="toast" id="toast">Copied!</div>
+
+<!-- ✅ YOUR PROMPT DATA FILE -->
+<script src="prompts.js"></script>
+
+<script>
+const grid = document.getElementById('grid-area');
+const countDisplay = document.getElementById('count-display');
+const navContainer = document.querySelector('.nav-container');
+const navBtns = document.querySelectorAll('.nav-btn');
+const toast = document.getElementById('toast');
+
+const urlParams = new URLSearchParams(window.location.search);
+const sharedId = urlParams.get('id');
+
+if(sharedId){
+    renderSharedCard(sharedId);
+}else{
+    renderPrompts('midjourney');
+}
+
+function renderSharedCard(id){
+    const data = allPrompts.find(p=>p.id==id);
+    navContainer.style.display="none";
+    grid.classList.add('share-mode');
+
+    grid.innerHTML=`
+    <section class="share-layout">
+        <article class="share-card">
+            <div class="share-image-wrap">
+                <img src="${data.image}">
             </div>
 
-            <!-- Filter Pills (Midjourney / Nanobanana) -->
-            <nav class="nav-container">
-                <button class="nav-btn active" onclick="filterCategory('midjourney')">Midjourney</button>
-                <button class="nav-btn" onclick="filterCategory('nanobanana')">Nanobanana</button>
-            </nav>
-        </div>
+            <div class="share-content">
+                <span class="share-pill">${data.category}</span>
+                <h2 class="share-title">Style Prompt</h2>
 
-        <div class="hero">
-            <div class="hero-left">
-                <div class="tag-pill">
-                    <span class="tag-dot"></span>
-                    CURATED PROMPT LIBRARY
-                </div>
+                <div class="share-prompt-box">${data.prompt}</div>
 
-                <h1 class="hero-heading">
-                    <span>DISCOVER & SAVE</span>
-                    <span class="hero-heading-gradient">YOUR BEST AI PROMPTS</span>
-                </h1>
-
-                <p class="hero-subtitle">
-                    Store your Midjourney & NanoBanana prompts with preview images. Copy in one click and share a single prompt page with anyone.
-                </p>
-
-                <div class="hero-metrics">
-                    <div class="metric-pill">
-                        <i class="fa-regular fa-image"></i>
-                        Visual prompt gallery
-                    </div>
-                    <div class="metric-pill">
-                        <i class="fa-regular fa-copy"></i>
-                        One-click copy
-                    </div>
-                    <div class="metric-pill">
-                        <i class="fa-solid fa-share-nodes"></i>
-                        Share per prompt link
-                    </div>
-                </div>
-
-                <div class="counter" id="count-display">Loading...</div>
-            </div>
-
-            <div class="hero-right">
-                <!-- Empty for now: keeps zigzag-style layout; you can add mock phone / screenshot later -->
-            </div>
-        </div>
-    </header>
-
-    <main class="container" id="grid-area">
-        <!-- Cards load here -->
-    </main>
-
-    <!-- Modal -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Prompt Details</div>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-scroll-area">
-                <img id="modal-img" class="modal-img" src="" alt="Full Preview">
-                <div class="modal-text" id="modal-text"></div>
-            </div>
-            <button class="btn-action btn-copy" style="width:100%" id="modal-copy-btn">
-                <i class="fa-regular fa-copy"></i> Copy Prompt
-            </button>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> Copied to Clipboard!
-    </div>
-
-    <!-- EXTERNAL DATA SCRIPT -->
-    <script src="index.js"></script>
-
-    <!-- MAIN LOGIC SCRIPT (unchanged from your version) -->
-    <script>
-        const grid = document.getElementById('grid-area');
-        const countDisplay = document.getElementById('count-display');
-        const navContainer = document.querySelector('.nav-container');
-        const modal = document.getElementById('modal');
-        const modalImg = document.getElementById('modal-img');
-        const modalText = document.getElementById('modal-text');
-        const modalCopyBtn = document.getElementById('modal-copy-btn');
-        const navBtns = document.querySelectorAll('.nav-btn');
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const sharedId = urlParams.get('id');
-
-        if (typeof allPrompts !== 'undefined') {
-            if (sharedId) {
-                renderSharedCard(sharedId);
-            } else {
-                renderPrompts('midjourney');
-            }
-        } else {
-            countDisplay.innerText = "Error: index.js not found or empty.";
-        }
-
-        function renderSharedCard(id) {
-            const cardData = allPrompts.find(item => item.id == id);
-
-            if (!cardData) {
-                grid.innerHTML = `<h3 style="text-align:center; width:100%; color:#666;">
-                    Prompt not found (ID: ${id})
-                </h3>
-                <div style="text-align:center; margin-top:15px;">
-                    <a href="${window.location.pathname}" style="color:var(--accent); text-decoration:none;">Go Home</a>
-                </div>`;
-                countDisplay.innerText = "0 Prompts Found";
-                navContainer.classList.add('nav-hidden'); 
-                return;
-            }
-
-            navContainer.classList.add('nav-hidden');
-            countDisplay.innerText = "Shared Prompt";
-
-            grid.innerHTML = createCardHTML(cardData);
-        }
-
-        function renderPrompts(category) {
-            navContainer.classList.remove('nav-hidden');
-
-            navBtns.forEach(btn => {
-                if (btn.innerText.toLowerCase() === category) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-
-            const filteredData = allPrompts.filter(item => item.category === category);
-            countDisplay.innerText = `${filteredData.length} Prompts Available`;
-
-            if (filteredData.length === 0) {
-                grid.innerHTML = `<h3 style="text-align:center; width:100%; color:#666;">No prompts found for ${category}</h3>`;
-                return;
-            }
-
-            grid.innerHTML = filteredData.map(item => createCardHTML(item)).join('');
-        }
-
-        function createCardHTML(item) {
-            const safePrompt = item.prompt.replace(/'/g, "\\'");
-            const safeImage = item.image.replace(/'/g, "\\'");
-            const safeId = item.id || 'err'; 
-            
-            return `
-            <div class="card">
-                <div class="card-click-area" onclick="openModal('${safeImage}', '${safePrompt}')">
-                    <div class="img-box">
-                        <img src="${item.image}" alt="AI Art" loading="lazy">
-                    </div>
-                    <div class="prompt-text">${item.prompt}</div>
-                </div>
-                
-                <div class="card-actions">
-                    <button class="btn-action btn-copy" onclick="copyText(this, '${safePrompt}')">
-                        <i class="fa-regular fa-copy"></i> Copy
+                <div class="share-actions">
+                    <button class="share-btn-primary" onclick="copyText('${data.prompt}')">
+                        <i class="fa-regular fa-copy"></i> Copy Prompt
                     </button>
-                    <button class="btn-action btn-share" onclick="shareCard(this, '${safeId}')" title="Share this specific card">
-                        <i class="fa-solid fa-share-nodes"></i>
+
+                    <button class="share-btn-secondary" onclick="copyText(window.location.href)">
+                        <i class="fa-solid fa-share"></i> Copy Share Link
                     </button>
                 </div>
-            </div>`;
-        }
+            </div>
+        </article>
+    </section>`;
+}
 
-        function filterCategory(category) {
-            if (window.location.search.includes('id=')) {
-                window.history.pushState({}, document.title, window.location.pathname);
-            }
-            renderPrompts(category);
-        }
+function renderPrompts(category){
+    navBtns.forEach(btn=>{
+        btn.classList.toggle("active", btn.innerText.toLowerCase()==category)
+    });
 
-        function shareCard(btn, id) {
-            if (id === 'err') {
-                showToast("Error: No ID found in index.js data");
-                return;
-            }
+    const filtered = allPrompts.filter(p=>p.category===category);
+    countDisplay.innerText = filtered.length+" Prompts";
 
-            const shareUrl = `${window.location.origin}${window.location.pathname}?id=${id}`;
+    grid.innerHTML = filtered.map(item=>`
+    <div class="card">
+        <div class="img-box"><img src="${item.image}"></div>
+        <div class="prompt-text">${item.prompt}</div>
+        <div class="card-actions">
+            <button class="btn-action" onclick="copyText('${item.prompt}')">Copy</button>
+            <button class="btn-action" onclick="shareCard(${item.id})">Share</button>
+        </div>
+    </div>`).join("");
+}
 
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                showToast("Share Link Copied!");
+function filterCategory(cat){
+    renderPrompts(cat);
+}
 
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = `<i class="fa-solid fa-check"></i>`;
-                btn.style.borderColor = "#22c55e";
-                btn.style.color = "#22c55e";
+function shareCard(id){
+    const link = window.location.origin + window.location.pathname + "?id=" + id;
+    copyText(link);
+}
 
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.style.borderColor = "";
-                    btn.style.color = "";
-                }, 2000);
-            });
-        }
+function copyText(text){
+    navigator.clipboard.writeText(text);
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"),2000);
+}
+</script>
 
-        function openModal(imageSrc, text) {
-            modalImg.src = imageSrc;
-            modalText.textContent = text;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            modalCopyBtn.onclick = function() { copyText(this, text); };
-        }
-
-        function closeModal() {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            setTimeout(() => { modalImg.src = ""; }, 250); 
-        }
-
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-        function copyText(btn, text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast("Copied to Clipboard!");
-                
-                if (btn) {
-                    const originalHTML = btn.innerHTML;
-                    btn.innerHTML = `<i class="fa-solid fa-check"></i> Copied`;
-                    btn.style.background = "rgba(22, 163, 74, 0.16)";
-                    btn.style.borderColor = "#22c55e";
-
-                    setTimeout(() => {
-                        btn.innerHTML = originalHTML;
-                        btn.style.background = "";
-                        btn.style.borderColor = "";
-                    }, 2000);
-                }
-            });
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> ${message}`;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
-        }
-    </script>
 </body>
 </html>
