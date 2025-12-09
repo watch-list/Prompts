@@ -1,105 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Prompt Collection</title>
-    <style>
-        /* DARK MODE DESIGN */
-        body { background-color: #121212; color: #fff; font-family: sans-serif; margin: 0; padding: 20px; }
-        h1 { text-align: center; margin-bottom: 40px; color: #e0e0e0; }
-        
-        /* GRID LAYOUT */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+  <meta charset="UTF-8" />
+  <title>My Prompt Library</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-        /* CARD STYLE */
-        .card {
-            background: #1e1e1e;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #333;
-            transition: transform 0.2s;
-        }
-        .card:hover { transform: translateY(-5px); border-color: #555; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #050816;
+      color: #f9fafb;
+    }
 
-        .card img { width: 100%; height: 250px; object-fit: cover; }
-        .content { padding: 15px; }
-        .title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
-        
-        .prompt-text {
-            background: #000;
-            padding: 10px;
-            font-size: 0.85rem;
-            color: #ccc;
-            height: 60px;
-            overflow: hidden;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
+    h1 {
+      margin-top: 0;
+      margin-bottom: 4px;
+      font-size: 24px;
+      font-weight: 700;
+    }
 
-        .copy-btn {
-            width: 100%;
-            padding: 10px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .copy-btn:hover { background: #2563eb; }
-    </style>
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 20px;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .top-bar input {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #f9fafb;
+      min-width: 220px;
+      font-size: 13px;
+    }
+
+    .top-bar input::placeholder {
+      color: #6b7280;
+    }
+
+    .pill {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid #334155;
+      font-size: 11px;
+      color: #9ca3af;
+      background: radial-gradient(circle at top left, #22c1c3 0, #1e293b 55%, #020617 100%);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .prompt-card {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(251,191,36,0.14), transparent 55%),
+                  #020617;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .prompt-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e5e7eb;
+      border: none;
+      background: transparent;
+      padding: 3px 0;
+      width: 100%;
+      outline: none;
+    }
+
+    .prompt-meta {
+      font-size: 11px;
+      color: #9ca3af;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .prompt-meta input {
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      padding: 2px 8px;
+      font-size: 11px;
+      outline: none;
+      min-width: 0;
+    }
+
+    .prompt-text {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      background: rgba(15,23,42,0.96);
+      padding: 8px;
+      font-size: 12px;
+      color: #e5e7eb;
+      outline: none;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    .prompt-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .copy-btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #38bdf8, #facc15);
+      color: #020617;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .copy-btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.4) inset;
+    }
+
+    .tiny {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px dashed #334155;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>My Prompt Library</h1>
+    <div class="subtitle">
+      Store your image prompts and copy the full text in one click. Edit this file to add more prompts.
+    </div>
+    <div class="top-bar">
+      <input id="search" type="text" placeholder="Search by title / model / tags…" />
+      <div class="pill">Tip: Duplicate a card block in the code to add new prompts.</div>
+    </div>
+  </header>
 
-    <h1>MY PROMPT GALLERY</h1>
-    <div class="gallery" id="gallery-container"></div>
+  <main class="grid" id="promptGrid">
+    <!-- 🔹 PROMPT CARD 1 -->
+    <article class="prompt-card" data-tags="portrait,nanobananapro,studio">
+      <div class="prompt-header">
+        <input class="prompt-title" value="Studio portrait – NanoBananaPro base" />
+      </div>
 
-    <script>
-        // ==========================================
-        // ADD YOUR PROMPTS HERE
-        // ==========================================
-        const prompts = [
-            {
-                title: "Midjourney",
-                image: "https://imgur.com/gallery/ouch-4UkcMUZ#/t/funny",
-                text: "Cyberpunk street, neon lights, rain, 8k resolution, futuristic uwwaf wjkfbwbvsjw wa f awfawe vr 5 t vyyyey ervyeyc y x taerh   ach t qc jqy j ya j yj y j 5yj y 6u ."
-            },
-            {
-                title: "Example Style 2",
-                image: "https://via.placeholder.com/400x300", 
-                text: "Oil painting of a cottage, cozy atmosphere, warm lighting, textured brushstrokes."
-            }
-        ];
-        // ==========================================
+      <div class="prompt-meta">
+        <input value="Model: NanoBananaPro" />
+        <input value="Style: Hyperrealistic" />
+        <span class="tag">portrait</span>
+      </div>
 
-        const container = document.getElementById('gallery-container');
-        prompts.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <img src="${item.image}" alt="${item.title}">
-                <div class="content">
-                    <div class="title">${item.title}</div>
-                    <div class="prompt-text">${item.text}</div>
-                    <button class="copy-btn" onclick="copyPrompt('${item.text.replace(/'/g, "\\'")}', this)">Copy Prompt</button>
-                </div>
-            `;
-            container.appendChild(card);
+      <textarea class="prompt-text">
+ultra detailed studio portrait of a young woman, 8k, hyper realistic skin texture, soft diffused lighting, shallow depth of field, sharp eyes, slight smile, centered composition, clean background, shot on DSLR, f1.8, 4:5 aspect ratio -- perfect for NanoBananaPro
+      </textarea>
+
+      <div class="prompt-actions">
+        <button class="copy-btn" type="button">
+          <span>Copy prompt</span> <span>📋</span>
+        </button>
+        <span class="tiny">Edit the text above, then click “Copy prompt”.</span>
+      </div>
+    </article>
+
+    <!-- 🔹 PROMPT CARD 2 -->
+    <article class="prompt-card" data-tags="fashion,full body,street">
+      <div class="prompt-header">
+        <input class="prompt-title" value="Street fashion full-body shot" />
+      </div>
+
+      <div class="prompt-meta">
+        <input value="Model: NanoBananaPro" />
+        <input value="Style: Fashion / Street" />
+        <span class="tag">fashion</span>
+      </div>
+
+      <textarea class="prompt-text">
+full body street fashion photo of a trendy girl in urban city, cinematic lighting, dynamic pose, shallow depth of field, bokeh background, shot on 35mm lens, editorial look, 8k, 4:5 ratio, extremely detailed fabrics, crisp focus on face -- nanoBananaPro style
+      </textarea>
+
+      <div class="prompt-actions">
+        <button class="copy-btn" type="button">
+          <span>Copy prompt</span> <span>📋</span>
+        </button>
+        <span class="tiny">Change this to your own fashion prompt.</span>
+      </div>
+    </article>
+
+    <!-- 🔹 DUPLICATE FROM HERE TO MAKE MORE PROMPTS 🔹
+    <article class="prompt-card" data-tags="your,tags,here">
+      <div class="prompt-header">
+        <input class="prompt-title" value="Your prompt title" />
+      </div>
+
+      <div class="prompt-meta">
+        <input value="Model: NanoBananaPro" />
+        <input value="Style: Describe style" />
+        <span class="tag">custom</span>
+      </div>
+
+      <textarea class="prompt-text">
+Paste your full prompt here...
+      </textarea>
+
+      <div class="prompt-actions">
+        <button class="copy-btn" type="button">
+          <span>Copy prompt</span> <span>📋</span>
+        </button>
+        <span class="tiny">Describe how this prompt is used.</span>
+      </div>
+    </article>
+    🔹 END DUPLICATE TEMPLATE 🔹 -->
+  </main>
+
+  <script>
+    // Copy prompt logic
+    function attachCopyHandlers() {
+      const cards = document.querySelectorAll('.prompt-card');
+      cards.forEach(card => {
+        const btn = card.querySelector('.copy-btn');
+        const area = card.querySelector('.prompt-text');
+        if (!btn || !area) return;
+
+        btn.addEventListener('click', function () {
+          const text = area.value || '';
+          if (!text.trim()) {
+            alert('This prompt is empty.');
+            return;
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text)
+              .then(() => alert('Prompt copied!'))
+              .catch(() => {
+                fallbackCopy(text);
+              });
+          } else {
+            fallbackCopy(text);
+          }
         });
+      });
+    }
 
-        function copyPrompt(text, btn) {
-            navigator.clipboard.writeText(text);
-            const original = btn.innerText;
-            btn.innerText = "Copied!";
-            setTimeout(() => btn.innerText = original, 2000);
-        }
-    </script>
+    function fallbackCopy(text) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        alert('Prompt copied!');
+      } catch (err) {
+        alert('Could not copy automatically. Please select and copy manually.');
+      }
+      document.body.removeChild(temp);
+    }
+
+    // Simple search/filter
+    function attachSearch() {
+      const searchInput = document.getElementById('search');
+      const cards = document.querySelectorAll('.prompt-card');
+
+      if (!searchInput) return;
+
+      searchInput.addEventListener('input', function () {
+        const q = searchInput.value.toLowerCase().trim();
+        cards.forEach(card => {
+          const title = card.querySelector('.prompt-title')?.value.toLowerCase() || '';
+          const metaInputs = card.querySelectorAll('.prompt-meta input');
+          let metaText = '';
+          metaInputs.forEach(i => (metaText += ' ' + (i.value || '').toLowerCase()));
+          const tags = (card.getAttribute('data-tags') || '').toLowerCase();
+
+          const haystack = title + ' ' + metaText + ' ' + tags;
+          const show = !q || haystack.includes(q);
+          card.style.display = show ? '' : 'none';
+        });
+      });
+    }
+
+    attachCopyHandlers();
+    attachSearch();
+  </script>
 </body>
 </html>
